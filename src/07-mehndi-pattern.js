@@ -54,20 +54,87 @@
  */
 export function repeatChar(char, n) {
   // Your code here
+  if(typeof char !== "string" || char.length === 0 || n <=0)
+    return '';
+
+  return char + repeatChar(char,n-1);
 }
 
 export function sumNestedArray(arr) {
-  // Your code here
+  // Your code here - [1, [2, [3, 4]], 5]
+  if(!Array.isArray(arr) || arr.length === 0)
+    return 0;
+
+  if(Array.isArray(arr[0])){
+    return sumNestedArray(arr[0]) + sumNestedArray(arr.slice(1));
+  }
+
+  if(typeof arr[0] !== 'number')
+    return sumNestedArray(arr.slice(1));
+  else
+    return arr[0] + sumNestedArray(arr.slice(1));
+  
 }
 
 export function flattenArray(arr) {
-  // Your code here
+  // Your code here - [1, [2, [3, 4]], 5] => [1, 2, 3, 4, 5]
+  if(!Array.isArray(arr))
+    return [];
+
+  if(arr.length === 0)
+    return [];
+
+  const result = [];
+
+  for (const element of arr) {
+    if (Array.isArray(element)) {
+      result.push(...flattenArray(element));
+    } else {
+      result.push(element);
+    }
+  }
+
+  return result;
 }
+    
 
 export function isPalindrome(str) {
   // Your code here
+  if(typeof str !== 'string')
+    return false;
+  str = str.toLowerCase();
+  if(str.length <= 1)
+    return true;
+
+  if(str.at(0) === str.at(-1))
+    return isPalindrome(str.slice(1, -1));
+  else 
+    return false;
 }
 
 export function generatePattern(n) {
   // Your code here
+  if (!Number.isInteger(n) || n <= 0)
+    return [];
+
+  function build(k) {
+
+    if (k === 1)
+      return ["*"];
+
+    const prev = build(k - 1);
+    const line = "*".repeat(k);
+
+    return [...prev, line];
+  }
+
+  const ascending = build(n);
+  const descending = ascending.slice(0, -1).reverse();
+
+  return [...ascending, ...descending];
 }
+
+// console.log(repeatChar('ch',4));
+// console.log(sumNestedArray([1, [2, [3, 4,'shhh']], 5]));
+// console.log(flattenArray([1, [2, [3, 4]], 5]));
+console.log(isPalindrome('panagtanap'));

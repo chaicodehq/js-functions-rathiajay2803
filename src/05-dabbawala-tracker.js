@@ -50,4 +50,81 @@
  */
 export function createDabbawala(name, area) {
   // Your code here
+  let id = 0;
+  let deliveries = [];
+
+  const addDelivery = (from, to) => {
+    if(typeof from !== 'string' || typeof to !== 'string' || !from || !to)
+      return -1;
+
+    const delivery = {
+      id: ++id,
+      from,
+      to,
+      status: 'pending'
+    }
+    
+    deliveries.push(delivery);
+    return id;
+  }
+
+  const completeDelivery = (id) => {
+    if(typeof id !== 'number') return false;
+
+    const deliveryData = deliveries.find(delivery => delivery.id === id);
+
+    if(!deliveryData || deliveryData.status === 'completed')
+      return false;
+
+    deliveryData.status = "completed";
+    return true;
+  }
+
+  const getActiveDeliveries = () => {
+    return structuredClone(deliveries.filter(delivery => delivery.status === 'pending'));
+  }
+
+  const getStats = () => {
+    const {completed,pending} = deliveries.reduce((acc,{status}) => {
+      status = status.trim().toLowerCase();
+      acc[status] = (acc[status] ?? 0)+1;
+      return acc;
+    }, {
+      completed:0,
+      pending: 0,
+    })
+
+    const total = deliveries.length;
+    const successRate = total === 0 ? '0.00%' : ((completed/total)*100).toFixed(2) + '%';
+
+    return {
+      name, 
+      area,
+      total,
+      completed,
+      pending,
+      successRate
+    }
+  }
+
+  const reset = () => {
+    deliveries = [];
+    id = 0;
+    return true;
+  }
+
+  return {
+    addDelivery,
+    completeDelivery,
+    getActiveDeliveries,
+    getStats,
+    reset
+  }
 }
+
+
+const ram = createDabbawala("Ram", "Dadar");
+console.log(ram.addDelivery("Andheri", "Churchgate")) // => 1
+console.log(ram.addDelivery("Bandra", "CST"))         // => 2
+console.log( ram.completeDelivery(1));              // => true
+console.log(ram.getStats());

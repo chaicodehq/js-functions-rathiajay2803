@@ -33,4 +33,34 @@
  */
 export function calculateDosaOrder(type, quantity = 1, isSpicy = false) {
   // Your code here
+  if(typeof type != 'string' || typeof quantity != 'number' || Number.isNaN(quantity)||quantity<=0)
+    return null;
+
+  const dosaPrices = [
+    {type: 'plain', price: 40},
+    {type: 'masala', price: 60},
+    {type: 'onion', price:50},
+    {type: 'butter', price:70 },
+    {type: 'paper', price: 90},
+    {type: 'cheese', price: 80}
+    
+  ]
+
+  const dosaOrdered = dosaPrices.find(dosa => dosa.type === type.trim().toLowerCase());
+  if(dosaOrdered === undefined){
+    return null;
+  }
+  console.log(dosaOrdered);
+  const pricePerDosa=  dosaOrdered.price + (isSpicy?10:0);
+  
+  return {
+    type: dosaOrdered.type,
+    quantity: quantity,
+    pricePerDosa,
+    total: pricePerDosa*quantity   
+  }
+  
 }
+
+// console.log(calculateDosaOrder("masala", 2, true));
+// console.log(calculateDosaOrder('butter', 2, true));
